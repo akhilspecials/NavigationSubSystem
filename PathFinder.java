@@ -8,16 +8,19 @@ import java.util.Map;
 public class PathFinder {
     private static Map<Character, Character> charMap = new HashMap<>();
     private static Map<Character, Integer> scoreMap = new HashMap<>();
-    private static int  illegalCharPos = -1;
+    private static boolean isIllegalCharFound = false;
+    private static Character firstIllegalChar = null;
     private static List<Character>  pileOfChar = new ArrayList<>();
+    private static List<Character>  illegalChar = new ArrayList<>();
 
     public static void main(String[] args) {
         makeHashMap();
         List<String> totalPath = new ArrayList<>();
         int totalSum = 0;
 
-        totalPath.add("[({(<(())[]>[[{[]{<()<>>");
-        //data.add("[(()[<>])]({[<{<<[]>>(");
+       // totalPath.add("[({(<(())[]>[[{[]{<()<>>");
+      //  totalPath.add("{<[]})");
+        totalPath.add("{[<(]>)}");
 
         for (String singlePath : totalPath) {
             System.out.println("line: " + singlePath);
@@ -27,24 +30,26 @@ public class PathFinder {
                     pileOfChar.add(charMap.get(ch[i]));
                     System.out.println("if pileOfChar: " + pileOfChar);
                 } else {
-                    if (pileOfChar.get(pileOfChar.size() - 1).equals(ch[i])) {
-                        pileOfChar.remove(pileOfChar.size() - 1);
-                        System.out.println("else pileOfChar: " + pileOfChar);
-                    }else{
-                        System.out.println("break: " + i + "ch[i]" + ch[i]);
-                        if(illegalCharPos == -1){
-                            illegalCharPos = i;
+                   Character lastChar = pileOfChar.get(pileOfChar.size() - 1);
+                    if (!lastChar.equals(ch[i])) {
+                        illegalChar.add(ch[i]);
+                        if(!isIllegalCharFound){
+                            firstIllegalChar = lastChar;
+                            isIllegalCharFound = true;
                         }
                     }
+                    pileOfChar.remove(pileOfChar.size() - 1);
+                    System.out.println("else pileOfChar: " + pileOfChar);
                 }
             }
         }
 
-        for(int j =0 ; j< pileOfChar.size() ; j++ ){
-            totalSum = totalSum + scoreMap.get(pileOfChar.get(j));
+        System.out.println("illegalChar: " + illegalChar);
+        for(int j =0 ; j< illegalChar.size() ; j++ ){
+            totalSum = totalSum + scoreMap.get(illegalChar.get(j));
         }
 
-        System.out.println("illegalCharPos: " + illegalCharPos);
+        System.out.println("firstIllegalChar: " + firstIllegalChar);
        System.out.println("totalSum: " + totalSum);
 
 
@@ -63,3 +68,4 @@ public class PathFinder {
     }
 
 }
+
